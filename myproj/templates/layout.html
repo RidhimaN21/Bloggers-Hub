@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+{% load static %}
+{% load i18n %}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title%}
+        {% blocktrans %}
+            Django App
+        {% endblocktrans %}
+        {% endblock %}
+
+    </title>
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <script src="{% static 'js/main.js'%}" defer></script>
+</head>
+<body>
+    
+
+    <nav>
+        {% blocktrans %}
+        <h2> Blogger's Hub </h2>
+        {% endblocktrans %}
+        <a href="/"><span role="img" aria-label="Home" title="Home">🏠</span></a> |
+        <a href="{% url 'blogs:list' %}"><span role="img" aria-label="Blog" title="Blog">📰</span></a> |
+        {% if user.is_authenticated and user.is_staff %}
+        <a href="{% url 'blogs:blog_new' %}"><span role="img" aria-label="New Blog" title="New Blogs">🆕</span></a> |
+        {% endif %}
+        {% if user.is_authenticated%}
+        <form class="logout" action="{% url 'users:logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout-button" aria-label="User Logout" title="User Logout">👋🏻</button> |
+        </form> 
+        <a href="{% url 'users:profile' %}"><span role="img" aria-label="Profile" title="Profile">👨‍💼</span></a>
+        {% else %}
+        <a href="{% url 'users:register' %}"><span role="img" aria-label="Register User" title="User Registration">📝</span></a> |
+        <a href="{% url 'users:login' %}"><span role="img" aria-label="User Login" title="User Login">🔓</span></a>
+        {% endif %}
+        {% comment %} <form class="form-with-validation" action="{% url 'set_language' %}" method="post">
+  {% csrf_token %}
+  <select name="language">
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_available_languages as LANGUAGES %}
+    {% for lang in LANGUAGES %}
+      <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %}selected{% endif %}>
+        {{ lang.1 }}
+      </option>
+    {% endfor %}
+  </select>
+  <input class="form-submit" type="submit" value="Change Language">
+</form> {% endcomment %}
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+      pageLanguage: 'en',  
+      includedLanguages: 'fr,es',  
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    },
+    'google_translate_element'
+  );
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+        {% block scripts %}
+        {% endblock %}
+    </main>
+</body>
+</html>
