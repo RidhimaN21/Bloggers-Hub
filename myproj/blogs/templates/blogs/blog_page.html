@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block title %}
+{% blocktrans with title=blog.title%}
+    {{ title }}
+    {% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+<section>
+    <img 
+    class="banner"
+    src="{{ blog.banner.url }}"
+    alt="{{ blog.title }}"
+    />
+    
+    <h1>{% blocktrans with title=blog.title%}
+    {{ title }}
+    {% endblocktrans %}</h1>
+    <p>
+        {% blocktrans with date=blog.date author=blog.author %}
+            {{ date }} by {{ author }}
+        {% endblocktrans %}
+    </p>
+    <p>{% blocktrans with body=blog.body%}
+    {{ body }}
+    {% endblocktrans %}</p>
+</section>
+<br>
+<hr>
+<br>
+
+<section>
+    <h2>
+        {% blocktrans with count=comments.count %}
+            Comments ({{ count }})
+        {% endblocktrans %}
+    </h2>
+    
+    {% for comment in comments %}
+        <div>
+            <strong>{{ comment.name }}</strong>
+            <span>
+                {% blocktrans with date=comment.created_at|date:"M d, Y H:i" %}
+                    ({{ date }})
+                {% endblocktrans %}
+            </span>
+            <p>{{ comment.text }}</p>
+
+            {% if user == comment.user or user.is_staff %}
+                <form method="POST" action="{% url 'blogs:delete_comment' comment.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="form-submit" type="submit" onclick="return confirm('{% trans "Are you sure you want to delete this comment?" %}');">
+                        {% trans "Delete" %}
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if user == comment.user %}
+                <button class="form-submit" onclick="toggleEditForm({{ comment.id }})">
+                    {% trans "Edit" %}
+                </button>
+
+                <form class="form-with-validation" method="POST" action="{% url 'blogs:edit_comment' comment.pk %}" id="edit-form-{{ comment.id }}" style="display:none;">
+                    {% csrf_token %}
+                    <textarea class="form-with-validation" name="text">{{ comment.text }}</textarea>
+                    <button class="form-submit" type="submit">{% trans "Update" %}</button>
+                </form>
+            {% endif %}
+        </div>
+        <br>
+        <hr>
+    {% empty %}
+        <p>{% trans "No comments yet. Be the first to comment!" %}</p>
+    {% endfor %}
+</section>
+<br>
+
+<section>
+    <h2>{% trans "Leave a Comment" %}</h2>
+    <form class="form-with-validation" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button class="form-submit" type="submit">{% trans "Submit" %}</button>
+    </form>
+    <a href="{% url 'blogs:list' %}">
+        <button class="back-button" type="button">{% trans "Back" %}</button>
+    </a>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleEditForm(commentID){
+        const form = document.getElementById('edit-form-' + commentID);
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}
