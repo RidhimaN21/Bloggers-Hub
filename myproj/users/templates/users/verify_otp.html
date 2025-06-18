@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Verify OTP" %}
+{% endblock %}
+
+{% block content %}
+<h2>{% trans "Verify OTP" %}</h2>
+<form class="form-with-validation" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="form-submit" type="submit">{% trans "Verify" %}</button>
+</form>
+{% endblock %}

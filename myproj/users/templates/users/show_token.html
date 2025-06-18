@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Backup Token" %}
+{% endblock %}
+
+{% block content %}
+<h2>{% trans "Login Complete" %}</h2>
+<p>Your backup token (keep it safe): <strong>{{ new_token }}</strong></p>
+<a href="{% url 'blogs:list' %}">Proceed to Blogs</a>
+{% endblock %}

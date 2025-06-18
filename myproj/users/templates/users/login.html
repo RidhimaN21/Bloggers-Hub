@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% load i18n %}
+
+{% block title %}
+    {% trans "User Login" %}
+{% endblock %}
+
+{% block content %}
+    <h1> {% trans "User Login" %} </h1>
+    <form class="form-with-validation" method="post">
+        {% csrf_token %}
+        {{ form.username.label_tag }} {{ form.username }}
+        <br>
+        {{ form.login_method.label_tag }}<br>
+        {{ form.login_method }}
+        <br>
+        <div id="password-field">
+            {{ form.password.label_tag }} {{ form.password }}
+        </div>
+        <div id="token-field" style="display:none;">
+            {{ form.token.label_tag }} {{ form.token }}
+        </div>
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        <button class="form-submit" type="submit">Login</button>
+    </form>
+    <script>
+        function toggleFields() {
+            var method = document.querySelector('input[name="login_method"]:checked').value;
+            document.getElementById('password-field').style.display = method === 'password' ? '' : 'none';
+            document.getElementById('token-field').style.display = method === 'token' ? '' : 'none';
+        }
+        document.querySelectorAll('input[name="login_method"]').forEach(function(el) {
+            el.addEventListener('change', toggleFields);
+        });
+        window.onload = toggleFields;
+    </script>
+{% endblock %}

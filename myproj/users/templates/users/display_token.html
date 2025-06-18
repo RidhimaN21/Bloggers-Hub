@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Backup Token" %}
+{% endblock %}
+
+{% block content %}
+<h2>{% trans "Registration Complete" %}</h2>
+<p>Your backup token (keep it safe): <strong>{{ token }}</strong></p>
+<a href="{% url 'users:login' %}">Proceed to Login</a>
+{% endblock %}
