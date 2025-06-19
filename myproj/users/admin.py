@@ -12,6 +12,7 @@ admin.site.register(User,UserAdmin)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'alternate_email', 'get_backup_token']
     fields = ['user', 'alternate_email']
+    search_fields = ["user__username","alternate_email__email"]
 
     def get_backup_token(self, obj):
         return obj.user.backup_token

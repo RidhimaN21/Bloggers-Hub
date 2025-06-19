@@ -1,29 +1,113 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+{% load highlight_filters %}
 {% block title %}
     {% trans "Blogs" %}
 {% endblock %}
 
 {% block content %}
 <section>
-    <h1>{% trans "Blogs" %}</h1>
-    {% for blog in blogs %}
-    <article class="blog">
-        <h2>
-            <a href="{% url 'blogs:blog_page' slug=blog.slug %}">
-                {{ blog.title }}
-            </a>
-        </h2>
-        <p>{{ blog.date }}</p>
-        <p>{{ blog.body }}</p>
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <h1>{% trans "Blogs" %}</h1>
+        </div>
+        <div style="flex: 1; padding: 10px; border-radius: 8px; justify-items: center;">
+            <form method="get">
+                <input name="q" type="text" placeholder="Search -->" style="padding: 6px;" value="{{ search_query }}">
+                {% if category_slug %}
+                    <input type="hidden" name="category" value="{{ category_slug }}">
+                {% endif %}
+                {% if tag_slug %}
+                    <input type="hidden" name="tag" value="{{ tag_slug }}">
+                {% endif %}
+                <button class="form-submit" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
 
-        <form method="POST" action="{% url 'blogs:upvote_blog' blog.id %}">
-            {% csrf_token %}
-            <button type="submit">
-                🔼 {{ blog.total_upvotes }}
-            </button>
-        </form>
-    </article>
-    {% endfor %}
+    <div style=" padding: 10px; margin-right: 160px; text-align: right;">
+    <form method="get">
+    <label for="category"><strong>Filter by Category:</strong></label>
+    <select name="category" id="category" onchange="this.form.submit()">
+        <option value="">-- All Categories --</option>
+        {% for cat in categories %}
+            <option value="{{ cat.slug }}" {% if cat.slug == request.GET.category %}selected{% endif %}>
+                {{ cat.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    {% if search_query %}
+
+        <input type="hidden" name="q" value="{{ search_query }}">
+    {% endif %}
+    </form>
+    </div>
+
+    {% comment %} <div style="margin-top: 10px;">
+        <strong>Filter by Tag:</strong>
+        {% for tag in tags %}
+            <a href="?tag={{ tag.slug }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ tag.name }}</a>
+        {% endfor %}
+    </div> {% endcomment %}
+
+    {% if object_list %}
+        {% for blog in object_list %}
+            <article class="blog">
+                <h2>
+                    <a href="{% url 'blogs:blog_page' slug=blog.slug %}">
+                        {{ blog.title|highlight_search:search_query }}
+                    </a>
+                </h2>
+                <p>{{ blog.date }}</p>
+                <p>{{ blog.body|highlight_search:search_query }}</p>
+                <p>
+                    Category: <a href="?category={{ blog.category.slug }}">{{ blog.category.name }}</a>
+                    <br>
+                    Tags:
+                    {% for t in blog.tags.all %}
+                        <a href="?tag={{ t.slug }}">{{ t.name }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+
+                <form method="POST" action="{% url 'blogs:upvote_blog' blog.id %}">
+                    {% csrf_token %}
+                    <button type="submit">
+                        🔼 {{ blog.total_upvotes }}
+                    </button>
+                </form>
+            </article>
+        {% empty %}
+            <p>No blogs available at the moment.</p>
+        {% endfor %}
+    {% else %}
+        <p>No blogs available at the moment.</p>
+    {% endif %}
+
+    {% if is_paginated %}
+    <div class="pagination">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <br>
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+                <strong>{{ num }}</strong>
+            {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        <br>
+
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">1</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}"><--</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">--></a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}">{{page_obj.paginator.num_pages}}</a>
+        {% endif %}
+    </div>
+    {% endif %}
 </section>
 {% endblock %}

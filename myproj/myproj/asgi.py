@@ -10,7 +10,11 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 import os
 
 from django.core.asgi import get_asgi_application
+from huggingface_hub import login
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproj.settings')
 
 application = get_asgi_application()
+
+# You can hardcode or use settings / env var
+login("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")

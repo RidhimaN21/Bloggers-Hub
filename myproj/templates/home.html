@@ -1,10 +1,29 @@
-{% extends 'layout.html'%}
+{% extends 'layout.html' %}
 
 {% block title %}
     Home
 {% endblock %}
 
 {% block content %}
-    <h1>HomePage</h1>
-    <p>View Blogs --> <a href="/blogs">Blogs</a></p>
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <h1>HomePage</h1>
+            <p>View Blogs --> <a href="/blogs">Blogs</a></p>
+        </div>
+        <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
+            <h2>ChatBot</h2>
+            <form class="form-with-validation" method="post" style="display: flex; gap: 5px;">
+                {% csrf_token %}
+                <input type="text" name="user_message" placeholder="Ask a question..." required style="flex: 1; padding: 5px;">
+                <button class="form-submit" type="submit"><span role="img" aria-label="send">➣</span></button>
+            </form>
+            
+            {% if response %}
+                <div style="margin-top: 10px;">
+                    <p><strong>You:</strong> {{ user_message }}</p>
+                    <p><strong>Chatbot:</strong> {{ response }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

@@ -1,5 +1,53 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+
+{% block title %}
+    {% trans "New Blog" %}
+{% endblock %}
+
+{% block content %}
+<section>
+    <h1>{% trans "New Blog" %}</h1>
+    <form class="form-with-validation" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        
+        <div>
+            {{ form.non_field_errors }}
+        </div>
+
+        <div>
+            {{ form.title.label_tag }}
+            {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+
+        <div>
+            {{ form.body.label_tag }}
+            {{ form.body }}
+            {{ form.body.errors }}
+        </div>
+
+        <div>
+            {{ form.banner.label_tag }}
+            {{ form.banner }}
+            {{ form.banner.errors }}
+        </div>
+
+        <div>
+            {{ form.category_name.label_tag }}
+            {{ form.category_name }}
+            {{ form.category_name.errors }}
+        </div>
+
+        <button class="form-submit">{% trans "Add Blog" %}</button>
+    </form>
+</section>
+{% endblock %}
+
+
+{% comment %} {% extends 'layout.html' %}
+{% load i18n %}
 {% block title %}
     {% trans "New Blog" %}
 {% endblock %}
@@ -13,4 +61,4 @@
         <button class="form-submit">{% trans "Add Blog" %}</button>
     </form>
 </section>
-{% endblock %}
+{% endblock %} {% endcomment %}

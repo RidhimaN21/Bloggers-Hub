@@ -1,6 +1,7 @@
 from django import forms 
 from .models import Comment , Blog
 from django.utils.translation import gettext_lazy as _
+from django.forms import RadioSelect
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -11,12 +12,15 @@ class CommentForm(forms.ModelForm):
         }
 
 class BlogForm(forms.ModelForm):
+    category_name = forms.CharField(label=_('Category'), required=False)
+
     class Meta:
         model = Blog
-        fields = ['title','body','slug','banner']
+        fields = ['title','body','banner',]
         labels = {
             'title' : _('title'),
             'body' : _('body'),
-            'slug' : _('slug'),
             'banner' : _('banner'),
+            #'category' : _('category'),
+            # 'tag' : _('tag'),
         }

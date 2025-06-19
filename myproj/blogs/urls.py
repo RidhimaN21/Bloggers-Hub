@@ -10,4 +10,6 @@ urlpatterns = [
     path('comment/delete/<int:pk>',views.delete_comment,name="delete_comment"),
     path('upvote/<int:blog_id>',views.upvote_blog,name="upvote_blog"),
     path('new/',views.blog_new,name="blog_new"),
+    path('category/<slug:slug>',views.blogs_by_category,name="blogs_by_category"),
+    path('tag/<slug:slug>',views.blogs_by_tag,name="blogs_by_tag"),
 ]
