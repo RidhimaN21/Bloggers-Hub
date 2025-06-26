@@ -61,14 +61,14 @@
                 </h2>
                 <p>{{ blog.date }}</p>
                 <p>{{ blog.body|highlight_search:search_query }}</p>
-                <p>
+                {% comment %} <p>
                     Category: <a href="?category={{ blog.category.slug }}">{{ blog.category.name }}</a>
                     <br>
                     Tags:
                     {% for t in blog.tags.all %}
                         <a href="?tag={{ t.slug }}">{{ t.name }}</a>{% if not forloop.last %}, {% endif %}
                     {% endfor %}
-                </p>
+                </p> {% endcomment %}
 
                 <form method="POST" action="{% url 'blogs:upvote_blog' blog.id %}">
                     {% csrf_token %}

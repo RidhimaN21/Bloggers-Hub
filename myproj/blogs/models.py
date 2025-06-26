@@ -6,7 +6,7 @@ from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True,blank=True)
 
     def __str__(self):
@@ -32,7 +32,7 @@ class Tag(models.Model):
 
 
 class Blog(models.Model):
-    title = models.CharField(_("Title"), max_length=60)
+    title = models.CharField(_("Title"), max_length=255)
     body = RichTextField()
     slug = models.SlugField(_("Slug"), unique=True, blank=True)
     date = models.DateTimeField(_("Date"), auto_now_add=True)

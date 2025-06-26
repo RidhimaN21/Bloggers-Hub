@@ -22,9 +22,22 @@
             {{ date }} by {{ author }}
         {% endblocktrans %}
     </p>
-    <p>{% blocktrans with body=blog.body%}
+    <p>{% blocktrans with body=blog.body|striptags%}
     {{ body }}
     {% endblocktrans %}</p>
+    {% if is_author %}
+    <button class="form-submit" onclick="toggleBlogEditForm()">
+        ✏️ Edit Blog
+    </button>
+
+    <form method="POST" enctype="multipart/form-data" id="edit-blog-form" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="edit_blog" value="true">
+        {{ blog_form.as_p }}
+        <button class="form-submit" type="submit">Save Changes</button>
+    </form>
+{% endif %}
+
 </section>
 <br>
 <hr>
@@ -91,6 +104,10 @@
 
 {% block scripts %}
 <script>
+    function toggleBlogEditForm(){
+        const form = document.getElementById('edit-blog-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
     function toggleEditForm(commentID){
         const form = document.getElementById('edit-form-' + commentID);
         if (form.style.display === 'none') {

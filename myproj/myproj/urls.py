@@ -23,11 +23,15 @@ from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = (
     path('admin/', admin.site.urls),
-    path('', views.homepage),
+    path('', views.homepage,name="home"),
+    path('generate-blog/', views.generate_blog_chat, name='generate_blog_chat'),
+    path('post-blog/', views.post_blog, name='post_blog'),
     path('accounts/',include('allauth.urls')),
+    path('api/',include('blogs.api_urls')),
     path('blogs/',include('blogs.urls')),
     path('users/',include('users.urls')),
-    path('i18n/',include('django.conf.urls.i18n'),)
+    path('i18n/',include('django.conf.urls.i18n'),),
+    path('api-auth',include('rest_framework.urls')),
 )
 
 urlpatterns = list(urlpatterns) + static(settings.MEDIA_URL , document_root=settings.MEDIA_ROOT)

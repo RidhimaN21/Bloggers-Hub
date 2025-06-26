@@ -21,6 +21,4 @@ class BlogForm(forms.ModelForm):
             'title' : _('title'),
             'body' : _('body'),
             'banner' : _('banner'),
-            #'category' : _('category'),
-            # 'tag' : _('tag'),
         }

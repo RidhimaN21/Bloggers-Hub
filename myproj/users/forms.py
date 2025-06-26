@@ -77,18 +77,6 @@ class BackupOrPasswordLoginForm(forms.Form):
 
 
 
-# class BackupOrPasswordLoginForm(forms.Form):
-#     username = forms.CharField()
-#     password = forms.CharField(widget=forms.PasswordInput,required=False)
-#     token = forms.CharField( required=False)
-
-#     def clean(self):
-#         cleaned = super().clean()
-#         if not cleaned.get('password') and cleaned.get('token'):
-#             raise forms.ValidationError("Enter passowrd or token to login .")
-#         return cleaned
-
-
 
 
 
